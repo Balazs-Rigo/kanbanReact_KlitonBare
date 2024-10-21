@@ -1,3 +1,11 @@
 npm create vite
 
 Typescript + SWC
+
+npm install @dnd-kit/core @dnd-kit/sortable
+
+npm install -D tailwindcss postcss autoprefixer
+
+npx tailwindcss init -p
+
+npm install tailwind-merge
