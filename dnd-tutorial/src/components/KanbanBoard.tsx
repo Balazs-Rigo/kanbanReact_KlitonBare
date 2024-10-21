@@ -1,6 +1,11 @@
-import PlusIcons from "../icons/PlusIcons"
+import { useState } from "react";
+import PlusIcon from "../icons/PlusIcon"
+import { Column, Id } from "../types";
+import ColumnContainer from "./ColumnContainer";
 
 function KanbanBoard() {
+const [columns, setColumns] = useState<Column[]>([]);
+
   return (
     <div className="
     m-auto
@@ -10,8 +15,13 @@ function KanbanBoard() {
     items-center 
     overflow-x-auto
     overflow-y-hidden
-    px-[40x]">
-        <div className="m-auto">
+    px-[40px]">
+        <div className="m-auto flex gap-4">
+            <div className="flex gap-4">
+                {columns.map((col) => (                    
+                    <ColumnContainer key ={col.id} column={col} deleteColumn={deleteColumn}/>                       
+                    ))}
+                </div>
         <button onClick={() => {
             createNewColumn();
         }} className="
@@ -30,15 +40,28 @@ function KanbanBoard() {
         gap-2
         "
         >  
-        <PlusIcons/>
+        <PlusIcon/>
         Add Column</button>
-        </div>
-        
+        </div>        
     </div>
   );
 
   function createNewColumn(){
+    const columnToAdd: Column = {
+        id:generateId(),
+        title: `Column ${columns.length + 1}`,
+    };
 
+    setColumns([...columns, columnToAdd]);
+  }
+
+  function deleteColumn(id:Id){
+    const filteredColumns = columns.filter((col) => col.id !== id);
+    setColumns(filteredColumns);
+  }
+
+  function generateId(){
+    return Math.floor(Math.random() * 10001);
   }
 }
 
