@@ -13,7 +13,7 @@ npm install tailwind-merge
 
 
 -------------------
-tartok: 46:20
+tartok: 58:00
 
 
 
