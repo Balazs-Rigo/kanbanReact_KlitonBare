@@ -2,33 +2,38 @@ import { useSortable } from "@dnd-kit/sortable";
 import { TrashIcon } from "../icons/TrashIcon";
 import { Column, Id } from "../types"
 import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 
-interface Props{
+interface Props {
     column: Column;
-    deleteColumn: (id:Id) => void;
+    deleteColumn: (id: Id) => void;
+    updateColumn: (id: Id, title: string) => void;
 }
 
 function ColumnContainer(props: Props) {
-    const {column, deleteColumn} = props;
+    const { column, deleteColumn, updateColumn } = props;
 
-    const {setNodeRef, attributes, listeners, transform, transition, isDragging} =
-    useSortable({
-        id: column.id,
-        data: {
-            type: "Column",
-            column,
-        },
-    });
+    const [editMode, setEditMode] = useState(false);
 
-const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-};
+    const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
+        useSortable({
+            id: column.id,
+            data: {
+                type: "Column",
+                column,
+            },
+            disabled: editMode
+        });
 
-if (isDragging){
-    return <div ref={setNodeRef}
-    style={style}
-    className="
+    const style = {
+        transition,
+        transform: CSS.Transform.toString(transform),
+    };
+
+    if (isDragging) {
+        return <div ref={setNodeRef}
+            style={style}
+            className="
     bg-columnBackgroundColor
     opacity-60
     border-2
@@ -40,13 +45,13 @@ if (isDragging){
     flex
     flex-col
     "></div>
-}
+    }
 
-  return (
-    <div
-    ref={setNodeRef}
-    style={style}
-    className="
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className="
     bg-columnBackgroundColor
     w-[350px]
     h-[500px]
@@ -55,12 +60,15 @@ if (isDragging){
     flex
     flex-col
     "
-    >
-        {/* Column title */}
-        <div 
-        {...attributes}
-        {...listeners}
-        className="
+        >
+            {/* Column title */}
+            <div
+                {...attributes}
+                {...listeners}
+                onClick={() => {
+                    setEditMode(true)
+                }}
+                className="
         bg-mainBackgroundColor
         text-md
         h-[60px]
@@ -75,8 +83,8 @@ if (isDragging){
         items-center
         justify-between
         ">
-            <div className="flex gap-2">
-        <div className="
+                <div className="flex gap-2">
+                    <div className="
         flex
         justify-center
         items-center
@@ -86,15 +94,24 @@ if (isDragging){
         text-sm
         rounded-full
         ">
-            0
-        </div>        
-        {column.title}
-        </div>
-        <button
-        onClick={()=> {
-            deleteColumn(column.id);
-        }}
-        className="
+                        0
+                    </div>
+                    {!editMode && column.title}
+                    {editMode &&
+                        <input
+                            className="bg-black focus:border-rose-500 border rounded outline-none px-2"
+                            value={column.title}
+                            onChange={(e) => updateColumn(column.id, e.target.value)}
+                            autoFocus
+                            onBlur={() => { setEditMode(false); }}
+                            onKeyDown={(e) => { if (e.key !== "Enter") return;
+                            setEditMode(false) }} />}
+                </div>
+                <button
+                    onClick={() => {
+                        deleteColumn(column.id);
+                    }}
+                    className="
         stroke-gray-500
         hover: stroke-white
         hover:bg-columnBackgroundColor
@@ -102,14 +119,14 @@ if (isDragging){
         px-1
         py-2
         ">
-            <TrashIcon />
-            </button>
-        </div>
+                    <TrashIcon />
+                </button>
+            </div>
 
-        <div className="flex flex-grow">Content</div>
-        <div>Footer</div>
+            <div className="flex flex-grow">Content</div>
+            <div>Footer</div>
         </div>
-  );
+    );
 }
 
 export default ColumnContainer

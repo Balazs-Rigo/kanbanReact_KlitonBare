@@ -34,7 +34,7 @@ function KanbanBoard() {
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.map((col) => (
-                <ColumnContainer key={col.id} column={col} deleteColumn={deleteColumn} />
+                <ColumnContainer key={col.id} column={col} deleteColumn={deleteColumn} updateColumn={updateColumn} />
               ))}
             </SortableContext>
           </div>
@@ -65,6 +65,7 @@ function KanbanBoard() {
             <ColumnContainer
               column={activeColumn}
               deleteColumn={deleteColumn}
+              updateColumn={updateColumn}
             />
           )}
         </DragOverlay>, document.body
@@ -85,6 +86,15 @@ function KanbanBoard() {
   function deleteColumn(id: Id) {
     const filteredColumns = columns.filter((col) => col.id !== id);
     setColumns(filteredColumns);
+  }
+
+  function updateColumn(id: Id, title: string){
+    const newColumns = columns.map((col)=> {
+      if(col.id !== id) return col;
+      return {...col, title};
+    });
+
+    setColumns(newColumns);
   }
 
   function onDragStart(event: DragStartEvent) {
