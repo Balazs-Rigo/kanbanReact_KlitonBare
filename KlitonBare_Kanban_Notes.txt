@@ -13,8 +13,7 @@ npm install tailwind-merge
 
 
 -------------------
-tartok: 58:00
-
+tartok: finished
 
 
 https://www.youtube.com/watch?v=RG-3R6Pu_Ik&t=917s
